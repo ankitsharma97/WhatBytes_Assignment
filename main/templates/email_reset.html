@@ -1,0 +1,7 @@
+<p>Hello,</p>
+
+<p>You're receiving this email because you requested a password reset for your account. Please click the link below to reset your password:</p>
+
+<a href="{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}">Reset your password</a>
+
+<p>If you didn’t request this, please ignore this email.</p>

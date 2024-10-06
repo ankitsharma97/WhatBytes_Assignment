@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Mental Health Support Community{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body">
+                <!-- Greeting the user -->
+                <h2>Hi, {{ user.username }}!</h2>
+    
+                <!-- Links to Profile, Change Password, and Logout -->
+                <ul class="list-group mt-3">
+                    <!-- Link to Profile -->
+                    <li class="list-group-item">
+                        <a href="{% url 'profile' %}">Go to Profile</a>
+                    </li>
+                    
+                    <!-- Link to Change Password -->
+                    <li class="list-group-item">
+                        <a href="{% url 'passchange' %}">Change Password</a>
+                    </li>
+                    
+                    <!-- Logout option -->
+                    <li class="list-group-item">
+                        <a href="{% url 'logout' %}" class="text-danger">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

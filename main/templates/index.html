@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Welcome to Our Website</h1>
+    
+    <!-- Login and Signup Buttons -->
+    <div class="buttons">
+        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+        <a href="{% url 'signup' %}" class="btn btn-secondary">Sign Up</a>
+    </div>
+</div>
+
+<style>
+    .container {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .buttons {
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 18px;
+        text-decoration: none;
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+    }
+
+    .btn:hover {
+        opacity: 0.8;
+    }
+</style>
+{% endblock %}

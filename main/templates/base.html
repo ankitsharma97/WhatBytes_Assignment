@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}MyProject{% endblock %}</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    .main-container {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .content {
+      flex: 1;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="main-container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+      <a class="navbar-brand font-weight-bold text-white" href="#">WebByte-Django</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link text-white shadow mx-2" href="{% url 'dashboard' %}">Dashboard</a>
+          </li> 
+          <li class="nav-item">
+            <a class="nav-link text-white shadow mx-2" href="{% url 'profile' %}">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white shadow mx-2" href="">New-Features</a>
+          </li>
+          <li class="nav-item dropdown shadow mx-2">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ request.user.username }}
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" style="z-index: 9999;">
+              <a class="dropdown-item" href="{% url 'editprofile' %}">Edit Profile</a>
+              <a class="dropdown-item" href="{% url 'passchange' %}">Change Password</a>
+              <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
+            </div>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link text-white shadow mx-2" href="{% url 'index' %}">Home</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link text-white shadow mx-2" href="{% url 'signup' %}">Sign Up</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link text-white shadow mx-2" href="{% url 'login' %}">LogIn</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+    <div class="container bg-white shadow content mt-2">
+      {% block content %}{% endblock %}
+    </div>
+    <footer class="bg-dark text-white text-center py-3 mt-4">
+      <p class="mb-0">&copy; 2024 MyProject. All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
