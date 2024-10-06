@@ -49,7 +49,7 @@ This is a Django-based web application developed as part of the WebByte assignme
 
     ```bash
    git clone https://github.com/ankitsharma97/WebByte-Django-Assignment.git   
-    cd WebByte-Django-Assignment
+    cd WebByte-Django-Assignment/Assignment
     ```
 
 4. **Install Dependencies:**

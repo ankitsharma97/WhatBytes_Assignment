@@ -39,7 +39,7 @@ def login(request):
     return render(request, 'login.html')
 
 
-def register(request):
+def signup(request):
     if request.user.is_authenticated:
         auth_logout(request)
         return redirect('login')
@@ -53,19 +53,19 @@ def register(request):
 
         if not all([name, email, username, password, confirm_password]):
             messages.error(request, 'All fields are required.')
-            return redirect('register')
+            return redirect('signup')
 
         if password != confirm_password:
             messages.error(request, 'Passwords do not match.')
-            return redirect('register')
+            return redirect('signup')
 
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Username already exists.')
-            return redirect('register')
+            return redirect('signup')
 
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Email already exists.')
-            return redirect('register')
+            return redirect('signup')
 
         user = User.objects.create_user(
             username=username, 
