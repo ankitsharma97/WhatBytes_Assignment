@@ -13,7 +13,7 @@
                     {% if messages %}
                         {% for message in messages %}
                             <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
-                                {{ message }}
+                                {{ message }} hi 
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -23,26 +23,10 @@
                     
                     <form method="post">
                         {% csrf_token %}
-                        <div class="form-group">
-                            <label for="old_password">Old Password</label>
-                            <input type="password" class="form-control" id="old_password" name="old_password" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="new_password">New Password</label>
-                            <input type="password" class="form-control" id="new_password" name="new_password" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="confirm_password">Confirm Password</label>
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-                        </div>
-
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Change Password</button>
-                            <a href="{% url 'profile' %}" class="btn btn-danger ml-2">Cancel</a>
-                        </div>
-                    </form>
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                      </form>
+                      
 
                     <a href="{% url 'forgotpassword' %}">Forgot Password?</a>
                 </div>

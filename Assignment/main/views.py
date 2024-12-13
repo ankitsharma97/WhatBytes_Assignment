@@ -1,87 +1,54 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
-from django.contrib import messages
-from .models import Profile
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.views import PasswordResetView
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.views import PasswordResetView
+from .forms import LoginForm, SignupForm, EditProfileForm, ChangePasswordForm
+from .models import Profile
 
 
 def index(request):
+    """Homepage view."""
     if request.user.is_authenticated:
         return redirect('profile')
     return render(request, 'index.html')
 
 
 def login(request):
+    """User login view."""
     if request.user.is_authenticated:
         auth_logout(request)
         return redirect('login')
-    
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        
-        user = authenticate(request, username=username, password=password)
-        
-        if user is not None:
-            auth_login(request, user)
-            return redirect('profile')
-        else:
-            messages.error(request, 'Invalid username or password.')
-            return redirect('login')
-    
-    return render(request, 'login.html')
+
+    form = LoginForm(request, data=request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        user = form.get_user()
+        auth_login(request, user)
+        return redirect('profile')
+    return render(request, 'login.html', {'form': form})
 
 
 def signup(request):
+    """User registration view."""
     if request.user.is_authenticated:
         auth_logout(request)
         return redirect('login')
-    
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('password1')
 
-        if not all([name, email, username, password, confirm_password]):
-            messages.error(request, 'All fields are required.')
-            return redirect('signup')
-
-        if password != confirm_password:
-            messages.error(request, 'Passwords do not match.')
-            return redirect('signup')
-
-        if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username already exists.')
-            return redirect('signup')
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, 'Email already exists.')
-            return redirect('signup')
-
-        user = User.objects.create_user(
-            username=username, 
-            password=password, 
-            email=email, 
-            first_name=name
-        )
-        profile = Profile.objects.create(user=user)
+    form = SignupForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        user = form.save()
+        Profile.objects.create(user=user)
         messages.success(request, 'Registration successful! You can now log in.')
         return redirect('login')
-    
-    return render(request, 'signup.html')
+    return render(request, 'signup.html', {'form': form})
 
 
 @login_required
 def logout(request):
+    """User logout view."""
     auth_logout(request)
     messages.success(request, 'You have been logged out.')
     return redirect('index')
@@ -89,76 +56,46 @@ def logout(request):
 
 @login_required
 def profile(request):
+    """User profile view."""
     profile = Profile.objects.get(user=request.user)
-    context = {
-        'user': request.user,
-        'profile': profile
-    }
-    return render(request, 'profile.html', context)
+    return render(request, 'profile.html', {'profile': profile})
 
 
 @login_required
 def dashboard(request):
-    context = {
-        'user': request.user
-    }
-    return render(request, 'dash.html', context)
+    """User dashboard view."""
+    profile = Profile.objects.get(user=request.user)
+    return render(request, 'dash.html', {'profile': profile})
 
 
 @login_required
 def edit_profile(request):
-    profile = request.user.profile
-    
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-
-        if not all([name, email]):
-            messages.error(request, 'Both name and email are required.')
-            return redirect('edit_profile')
-
-        request.user.first_name = name
-        request.user.email = email
-
-        request.user.save()
-        profile.save()
-
+    """Edit user profile."""
+    form = EditProfileForm(instance=request.user, data=request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        Profile.objects.filter(user=request.user).update()
         messages.success(request, 'Profile updated successfully.')
         return redirect('profile')
-    
-    return render(request, 'editProfile.html', {'user': request.user, 'profile': profile})
+    return render(request, 'editProfile.html', {'form': form})
 
 
 @login_required
 def change_password(request):
-    if request.method == 'POST':
-        old_password = request.POST.get('old_password')
-        new_password = request.POST.get('new_password')
-        confirm_password = request.POST.get('confirm_password')
-
-        if not all([old_password, new_password, confirm_password]):
-            messages.error(request, 'All password fields are required.')
-            return redirect('passchange')  
+    """Change user password."""
+    form = ChangePasswordForm(user=request.user, data=request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
         
-        if new_password != confirm_password:
-            messages.error(request, 'New password and confirmation do not match.')
-            return redirect('passchange')
-
-        if request.user.check_password(old_password):
-            request.user.set_password(new_password)
-            request.user.save()
-
-            update_session_auth_hash(request, request.user)
-            messages.success(request, 'Password changed successfully.')
-            return redirect('profile')
-        else:
-            messages.error(request, 'Old password is incorrect.')
-            return redirect('passchange')  
-
-    return render(request, 'updatePass.html')
+        update_session_auth_hash(request, request.user)  # Prevents logout after password change
+        Profile.objects.filter(user=request.user).update()
+        messages.success(request, 'Password changed successfully.')
+        return redirect('profile')
+    return render(request, 'updatePass.html', {'form': form})
 
 
 class ForgotPasswordView(SuccessMessageMixin, PasswordResetView):
+    """Password reset view."""
     email_template_name = 'email_reset.html'
     subject_template_name = 'email_subject.txt'
     success_url = reverse_lazy('login')

@@ -25,15 +25,12 @@
         <div class="container mt-4">
             <div class="card">
                 <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-                    <!-- Display the user's profile image if available -->
-                    <img src="{{ profile.image.url }}" class="rounded-circle mb-3" alt="User Image" style="width: 100px; height: 100px;">
         
                     <!-- Username -->
-                    <h3> <strong>Name:</strong>  {{ user.first_name }}</h3>
-                    <h3><strong>Username:</strong> {{ user.username }}</h3>
+                    <h3><strong>Username:</strong> {{ profile.user.username }}</h3>
                     <p class="text-muted"><strong>Email:</strong> {{ user.email }}</p>
 
-                    <p><strong>Date Joined: </strong>{{ profile.date_joined|date:"F d, Y" }}</p>
+                    <p><strong>Date Joined: </strong>{{ profile.user.date_joined|date:"F d, Y" }}</p>
 
                     <p><strong>Last Updated: </strong>{{ profile.last_updated|date:"F d, Y h:i A" }}</p>
 

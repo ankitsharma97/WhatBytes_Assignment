@@ -11,9 +11,7 @@ This is a Django-based web application developed as part of the WebByte assignme
 - [License](#license)
 
 ## Features
-- User registration and authentication
-- CRUD operations for managing content
-- Responsive design for better user experience
+- User registration and authentication System
 - SQLite database for easy setup and testing
 
 ## Prerequisites
@@ -60,7 +58,15 @@ This is a Django-based web application developed as part of the WebByte assignme
 
 
     ```
+
 5. **Run the Server:**
+
+    ```bash
+    python manage.py makemigrations
+    ```
+    
+
+6. **Run the Server:**
 
     ```bash
     python manage.py runserver

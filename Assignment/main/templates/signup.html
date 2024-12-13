@@ -5,39 +5,26 @@
         <div class="col-md-6">
             <div class="card shadow-lg p-3 mb-5 bg-white rounded">
                 <h3 class="card-title text-center">Sign Up</h3>
-                <div class="card-body">
-                    {% if error %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
-                    </div>
+                    {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+
                     {% endif %}
-                    <form method="POST">
+                    <form method="post">
                         {% csrf_token %}
-                        <div class="form-group">
-                            <label for="name">Name:</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirm_password">Confirm Password:</label>
-                            <input type="password" class="form-control" id="password1" name="password1" placeholder="Confirm your password" required>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
                     </form>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'login' %}">Already have an account? Log In</a>
+                    </div>
+                      
                 </div>
             </div>
         </div>
